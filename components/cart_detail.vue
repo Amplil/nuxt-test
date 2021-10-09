@@ -2,7 +2,7 @@
   <div>
     <div id="total">小計:{{total | formatCurrency}}円</div>
     <div id="goods_list">
-      <div v-for="(item, index) in citems" class="item col-xs-3">
+      <div v-for="(item, index) in $cartItems" :key='index' class="item col-xs-3">
         <div class="img-block">
           <img v-bind:src="item.image">
           <div>
@@ -16,12 +16,12 @@
 </template>
 <script>
 export default {
-  props: ['citems'],
+  //props: ['$cartItems'],
   computed: {
-    total: function () {
+    total: ()=> {
       let total = 0;
-      for(let id in this.citems){
-        total += (this.citems[id].price * this.citems[id].quantity);
+      for(let id in this.$cartItems){
+        total += (this.$cartItems[id].price * this.$cartItems[id].quantity);
       }
       return total;
     }
@@ -30,14 +30,14 @@ export default {
     delete_cart(del_list) { // カートから削除
       /*
       del_list.forEach(id=>{
-        delete this.citems[id];
+        delete this.$cartItems[id];
       });
       */
-      axios.post('delete_cart.php',{
+      $axios.post('delete_cart.php',{
         del_list
       })
       .then(response => {
-        app.cartItems = response.data
+        app.$cartItems = response.data
       })
       .catch(error => {
         console.log(error);

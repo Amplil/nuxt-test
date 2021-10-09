@@ -36,4 +36,9 @@ module.exports = {
     }
   }
 }
-
+export default {
+  plugins: [
+    {src:'~/plugins/utils.js'}
+  ],
+  components: true,
+}

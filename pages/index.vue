@@ -8,7 +8,7 @@
             <!--<form method='post' action=''>-->
             <form action method="get">
                 <div class="input-group">
-                    <input v-bind:value="keyword" v-model="keyword" type='text' id='searchtextbox' class="form-control" placeholder='キーワードで探す' name="keyword">
+                    <input value="form_keyword" v-model="keyword" type='text' id='searchtextbox' class="form-control" placeholder='キーワードで探す' name="keyword">
                     <!--<button class="btn btn-primary">検索</button>-->
                     <span class="input-group-btn">
                         <!--<input class="btn btn-secondary" id="searchbtn" type="submit" value="Go">-->
@@ -18,12 +18,12 @@
                 </div>
                 <div class="select">
                     <div id="shop-select">
-                        <label v-for="(value, name) :key='name' in shop_item" @click="searchbtn_click">
+                        <label v-for="(value,name) in shop_item" :key='name' @click="searchbtn_click">
                             <input type="checkbox" v-bind:value="name" v-model="shop_disp" name="shop[]">{{value}}
                         </label>
                     </div>
                     <select id="order-select" name="order" v-model="order" v-on:change="searchbtn_click">
-                        <option v-for="(value, name) :key='name' in order_str" v-bind:value="name">{{value}}</option>
+                        <option v-for="(value,name) in order_str" :key='name' v-bind:value="name">{{value}}</option>
                     </select>
                     <label>
                         <input type="checkbox" v-bind:value="true" v-model="tr_on" name="tr_on">翻訳機能
@@ -46,7 +46,7 @@
                 </transition>
                 <!--<div v-show="item_list" id="item-list" class="row">-->
                 <div id="item-list" class="row">
-                    <div v-for="item in items" class="item col-xs-3">
+                    <div v-for="item in items" :key='item' class="item col-xs-3">
                         <a v-bind:href="item.url" target="_blank">
                             <div class="img-block">
                                 <img v-bind:src="item.image">
@@ -56,10 +56,10 @@
                         </a>
                         <div class="input-group-btn">
                             <select v-model="item.quantity" v-on:change="cart_update(item)">
-                                <option v-for="i in 10" v-bind:value="i">{{i}}</option>
+                                <option v-for="i in 10" :key='i' v-bind:value="i">{{i}}</option>
                             </select>
                             <button @click="cart_update(item)" class="btn add_goods" v-bind:value="item.item_id">
-                                {{(typeof cartItems[item.item_id]==="undefined") ?  'カートに入れる' : '追加済み'}}
+                                {{(typeof this.$cartItems[item.item_id]==="undefined") ?  'カートに入れる' : '追加済み'}}
                             </button>
                         </div>
                     </div>
@@ -69,7 +69,8 @@
 
         <div class="col-3">
             <!-- カートの中身と合計 -->
-            <cart_detail :citems="cartItems" v-show="cartItems.length!==0"></cart_detail>
+            <!-- <cart_detail :this.$cartItems="this.$cartItems" v-show="this.$cartItems.length!==0"></cart_detail> -->
+            <cart_detail/>
             <!-- サイドバー広告 -->
             <div class="sidebar_fixed">
                 <ins class="adsbygoogle"
@@ -95,23 +96,6 @@
   </template>
 
 <script>
-//let shop_item ={rakuten:'楽天',amazon:'Amazon',ebay:'ebay'}; // 表示の順番
-//let order_str = {'relevanceblender':'おすすめ順','review-rank':'人気順', 'price-asc-rank':'価格の安い順', 'price-desc-rank':'価格の高い順'}; // 表示の順番
-//let order = 'relevanceblender';
-//let shop_disp=['rakuten','ebay'];
-//let item_data=[];
-
-// "ReferenceError: window is not defined" って言われる
-let v;
-if (process.browser) {
-  v = new URLSearchParams(window.location.search);
-}
-/*
-let v_keyword=v.get('keyword');
-let v_shop_disp=v.getAll('shop[]');
-let v_order=v.get('order');
-*/
-
 import cart_detail from '~/components/cart_detail.vue'
 
 export default {
@@ -120,19 +104,20 @@ export default {
   },
   data(){
     return{
-      keyword:v.get('keyword'),
-      shop_disp:v.getAll('shop[]'),
-      order:v.get('order'),
+      keyword:this.$route.query.keyword,
+      form_keyword:"abc",
+      shop_disp:this.$route.query.shop,
+      order:this.$route.query.order,
       shop_item: {rakuten:'楽天',amazon:'Amazon',ebay:'ebay'}, // 表示の順番
       order_str: {'relevanceblender':'おすすめ順','review-rank':'人気順', 'price-asc-rank':'価格の安い順', 'price-desc-rank':'価格の高い順'}, // 表示の順番
-      cartItems:[],
+      //cartItems:[],
       //cart_component:false,
       //cart_text:'カートに入れる',
       items: [],
       loading: true,
       errored: false,
       item_list:false,
-      tr_on:v.get('tr_on')==='true' ? true : false,
+      tr_on:this.$route.query.tr_on==='true' ? true : false,
       tr_keyword:'',
       tr_busy:false
     }
@@ -178,7 +163,7 @@ export default {
         */
         /*
         if (itemToAdd.existence === false) { // 新規商品の場合は商品を追加
-          this.cartItems.push(Vue.util.extend({}, cartItem)); // 通常のオブジェクトからVueオブジェクトを作り、追加する
+          this.$cartItems.push(Vue.util.extend({}, cartItem)); // 通常のオブジェクトからVueオブジェクトを作り、追加する
           //this.cart_text='追加済み';
           itemToAdd.existence=true;
         }
@@ -197,7 +182,7 @@ export default {
         item
       })
       .then(response => {
-        this.cartItems = response.data
+        this.$cartItems = response.data
       })
       .catch(error => {
         console.log(error);
@@ -263,14 +248,14 @@ export default {
           /*
           item.existence = false; // existence(カートにあるかどうか)プロパティを追加
 
-          for(let cart_id in this.cartItems){
+          for(let cart_id in this.$cartItems){
             if (cart_id === item.item_id) {
               item.existence = true;
             }
           }
           */
           /*
-          this.cartItems.forEach(citem => {
+          this.$cartItems.forEach(citem => {
             if (citem.item_id === item.item_id) {
               item.existence = true;
             }
@@ -294,11 +279,15 @@ export default {
       this.trans_item(value);
     }
   },
-  filters:{
-    formatCurrency(value) { // カンマ区切り
-      return '¥' + String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  /*
+  computed:{
+    // エラー対策 v-bind:value="keyword" conflicts with v-model on the same element because the latter already expands to a value binding internally
+    form_keyword(){
+      //return this.keyword;
+      return "test";
     }
-  },
+  }
+  */
 }
 </script>
 
