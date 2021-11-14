@@ -2,7 +2,7 @@
   <div>
     <div id="total">小計:{{total | formatCurrency}}円</div>
     <div id="goods_list">
-      <div v-for="(item, index) in $cartItems" :key='index' class="item col-xs-3">
+      <div v-for="(item, index) in cartItems" :key='index' class="item col-xs-3">
         <div class="img-block">
           <img v-bind:src="item.image">
           <div>
@@ -16,13 +16,18 @@
 </template>
 <script>
 export default {
-  //props: ['$cartItems'],
+  props: ['cartItems'],
+  mounted() {
+    console.log(this.cartItems);
+  },
   computed: {
-    total: ()=> {
+    total(){
       let total = 0;
-      for(let id in this.$cartItems){
-        total += (this.$cartItems[id].price * this.$cartItems[id].quantity);
+      const cartItems=this.cartItems;
+      for(let id in cartItems){
+        total += (cartItems[id].price * cartItems[id].quantity);
       }
+
       return total;
     }
   },
@@ -37,7 +42,7 @@ export default {
         del_list
       })
       .then(response => {
-        app.$cartItems = response.data
+        app.cartItems = response.data
       })
       .catch(error => {
         console.log(error);

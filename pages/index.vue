@@ -70,7 +70,7 @@
         <div class="col-3">
             <!-- カートの中身と合計 -->
             <!-- <cart_detail :this.$cartItems="this.$cartItems" v-show="this.$cartItems.length!==0"></cart_detail> -->
-            <cart_detail/>
+            <CartDetail :cartItems="cartItems"></CartDetail>
             <!-- サイドバー広告 -->
             <div class="sidebar_fixed">
                 <ins class="adsbygoogle"
@@ -96,11 +96,11 @@
   </template>
 
 <script>
-import cart_detail from '~/components/cart_detail.vue'
+import CartDetail from '~/components/cart_detail.vue'
 
 export default {
   components: {
-    cart_detail
+    CartDetail,
   },
   data(){
     return{
@@ -110,7 +110,7 @@ export default {
       order:this.$route.query.order,
       shop_item: {rakuten:'楽天',amazon:'Amazon',ebay:'ebay'}, // 表示の順番
       order_str: {'relevanceblender':'おすすめ順','review-rank':'人気順', 'price-asc-rank':'価格の安い順', 'price-desc-rank':'価格の高い順'}, // 表示の順番
-      //cartItems:[],
+      cartItems:[],
       //cart_component:false,
       //cart_text:'カートに入れる',
       items: [],

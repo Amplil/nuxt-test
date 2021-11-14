@@ -34,11 +34,18 @@ module.exports = {
         })
       }
     }
-  }
-}
-export default {
+  },
   plugins: [
     {src:'~/plugins/utils.js'}
   ],
   components: true,
+}
+export default {
+  //mode: 'spa',
+  /*
+  plugins: [
+    {src:'~/plugins/utils.js'}
+  ],
+  components: true,
+  */
 }
