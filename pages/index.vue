@@ -97,6 +97,7 @@
 
 <script>
 import CartDetail from '~/components/cart_detail.vue'
+import axios from 'axios';
 
 export default {
   components: {
@@ -124,24 +125,26 @@ export default {
   },
   mounted() {
     this.cart_update();
-    // クエリフィルタ
-    if(
-      this.keyword!==null && 
-      this.order!==null && 
-      this.keyword!=='' && 
-      this.order!=='' && 
-      this.shop_disp.length!==0
-    ){
-      if(this.tr_on==true){
-        this.trans(this.keyword,'ja','en',out=>{
-          this.tr_keyword=out;
-          this.serach_item();
-        });
+    if(this.shop_disp){
+      // クエリフィルタ
+      if(
+        this.keyword!==null && 
+        this.order!==null && 
+        this.keyword!=='' && 
+        this.order!=='' && 
+        this.shop_disp.length!==0
+      ){
+        if(this.tr_on==true){
+          this.trans(this.keyword,'ja','en',out=>{
+            this.tr_keyword=out;
+            this.search_item();
+          });
+        }
+        this.search_item();
       }
-      this.serach_item();
-    }
-    else{
-      this.loading = false;
+      else{
+        this.loading = false;
+      }
     }
   },
   methods: {
@@ -232,7 +235,7 @@ export default {
         }
       });
     },
-    serach_item(){
+    search_item(){
       axios.get('price_comparison_ajax.php', {
         params: {
           keyword:this.keyword,
