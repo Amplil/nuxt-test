@@ -48,4 +48,13 @@ export default {
   ],
   components: true,
   */
+  target: 'static',
+  router: {
+    base: '/vue-cli/'
+  },
+  /*
+  generate: {
+    dir: 'docs'
+  }, 
+  */
 }
