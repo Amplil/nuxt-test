@@ -172,7 +172,9 @@ export default {
         }
         */
       }
-      axios.post('add_cart.php',{
+
+
+      axios.post('/api/shop/add_cart.php',{
         /*
         item_id:itemToAdd.item_id,
         image:itemToAdd.image,
@@ -236,7 +238,7 @@ export default {
       });
     },
     search_item(){
-      axios.get('price_comparison_ajax.php', {
+      axios.get('http://localhost:3000/api/price_comparison_ajax.php', {
         params: {
           keyword:this.keyword,
           shop:this.shop_disp,

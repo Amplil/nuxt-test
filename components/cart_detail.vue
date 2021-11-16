@@ -38,7 +38,7 @@ export default {
         delete this.$cartItems[id];
       });
       */
-      $axios.post('delete_cart.php',{
+      $axios.post('http://localhost:3000/api/delete_cart.php',{
         del_list
       })
       .then(response => {

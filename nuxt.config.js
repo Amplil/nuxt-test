@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   /*
   ** Headers of the page
   */
@@ -39,8 +39,7 @@ module.exports = {
     {src:'~/plugins/utils.js'}
   ],
   components: true,
-}
-export default {
+
   //mode: 'spa',
   /*
   plugins: [
@@ -57,4 +56,21 @@ export default {
     dir: 'docs'
   }, 
   */
+  modules: [
+    // Doc: https://axios.nuxtjs.org/usage
+    '@nuxtjs/axios',
+    'bootstrap-vue/nuxt',
+  ],
+  axios: {
+    proxy: true
+  },
+  proxy: {
+    '/api1/': 'https://electronic-handicraft.work/shop',
+    '/api/': {
+        target: 'https://electronic-handicraft.work',
+        pathRewrite: {
+            '^/api/': '/'
+        }
+    }
+  }
 }
